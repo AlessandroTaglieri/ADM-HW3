@@ -7,7 +7,7 @@
 import pandas as pd
 import os.path
 #define column of our dataframe
-df=pd.DataFrame(columns=['title', 'intro', 'plot'])
+df=pd.DataFrame(columns=['title', 'intro', 'plot','film_name','producer','director','writer','starring','music','release date','runtime','country','language','budget'])
 
 
 for index in range(len(listUrl_Movies3)):
@@ -15,7 +15,18 @@ for index in range(len(listUrl_Movies3)):
     title=''
     plot=''
     intro=''
-    movie=[]
+    title_name='NA'
+    producer='NA'
+    director='NA'
+    writer='NA'
+    starring='NA'
+    music='NA'
+    release_date='NA'
+    runtime='NA'
+    country='NA'
+    language='NA'
+    budget='NA'
+    
     
     #define name of the file that we want to find (in my case: in the same directory)
     name="aritcle_"
@@ -70,10 +81,48 @@ for index in range(len(listUrl_Movies3)):
         intro="NAN"
         plot="NAN"
     
-    #here: code to get info about infobox from every page        
+    #here: code to get info about infobox from every page    
+    if not soup.find('table', attrs={'class': 'infobox vevent'}):
+        continue
+    table = soup.find('table', attrs={'class': 'infobox vevent'})  
+
+    if table.find('th', attrs={'class': 'summary'}):
+        
+        x=table.find('th', attrs={'class': 'summary'})
+        title_name=x.text.strip()
+        
+    for cell in table.find_all('th'):
+        
+        if cell.find_next_sibling('td'):
+            a=cell.find_next_sibling('td')
+            if cell.text.strip()=='Directed by':
+                director=a.text.strip()
+            elif cell.text.strip()=='Produced by':                
+                producer=a.text.strip()
+            elif cell.text.strip()=='Written by':                
+                writer=a.text.strip()
+            elif cell.text.strip()=='Starring':              
+                starring=a.text.strip()
+            elif cell.text.strip()=='Music by':          
+                music=a.text.strip()
+            elif cell.text.strip()=='Release date':
+                release_date=a.text.strip()   
+            elif cell.text.strip()=='Running time':
+                runtime=a.text.strip()
+            elif cell.text.strip()=='Country':              
+                country=a.text.strip()
+            elif cell.text.strip()=='Language':             
+                language=a.text.strip()
+            elif cell.text.strip()=='Budget':             
+                budget=a.text.strip()
+        else:
+            continue
             
     
+    
+
     #put all infos in movie list
-    movie=[title,intro,plot]
+    movie=[title,intro,plot,title_name,producer,director,writer,starring,music,release_date,runtime,country,language,budget]
     #update dataframe with this list
     df.loc[index] = movie
+    

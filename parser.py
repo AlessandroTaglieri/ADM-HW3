@@ -4,6 +4,7 @@
 # In[ ]:
 
 
+import csv
 import pandas as pd
 import os.path
 #define column of our dataframe
@@ -45,6 +46,7 @@ for index in range(len(listUrl_Movies3)):
     
     #take all p in intro(firt section)
     if soup.find('span', attrs={'class': 'mw-headline'}):
+        
         heading = soup.find('span', attrs={'class': 'mw-headline'})
         paragraphs = heading.find_all_previous('p')
         for p in paragraphs: 
@@ -53,10 +55,11 @@ for index in range(len(listUrl_Movies3)):
      
         #take all p in 'plot'(second section)
         b=True
-        if soup.find('span', attrs={'class': 'mw-headline'}):   
+        if soup.find('span', attrs={'class': 'mw-headline'}): 
+            
             heading = soup.find('span', attrs={'class': 'mw-headline'})
             if heading.find_all_next('p'):
-            
+                
                 paragraphs = heading.find_all_next('p')
                 for p in paragraphs: 
                     # print (team.text)
@@ -82,47 +85,66 @@ for index in range(len(listUrl_Movies3)):
         plot="NAN"
     
     #here: code to get info about infobox from every page    
-    if not soup.find('table', attrs={'class': 'infobox vevent'}):
-        continue
-    table = soup.find('table', attrs={'class': 'infobox vevent'})  
-
-    if table.find('th', attrs={'class': 'summary'}):
+    if soup.find('table', attrs={'class': 'infobox vevent'}):
         
-        x=table.find('th', attrs={'class': 'summary'})
-        title_name=x.text.strip()
+        table = soup.find('table', attrs={'class': 'infobox vevent'})  
+    
+        if table.find('th', attrs={'class': 'summary'}):
         
-    for cell in table.find_all('th'):
+            x=table.find('th', attrs={'class': 'summary'})
+            title_name=x.text.strip()
         
-        if cell.find_next_sibling('td'):
-            a=cell.find_next_sibling('td')
-            if cell.text.strip()=='Directed by':
-                director=a.text.strip()
-            elif cell.text.strip()=='Produced by':                
-                producer=a.text.strip()
-            elif cell.text.strip()=='Written by':                
-                writer=a.text.strip()
-            elif cell.text.strip()=='Starring':              
-                starring=a.text.strip()
-            elif cell.text.strip()=='Music by':          
-                music=a.text.strip()
-            elif cell.text.strip()=='Release date':
-                release_date=a.text.strip()   
-            elif cell.text.strip()=='Running time':
-                runtime=a.text.strip()
-            elif cell.text.strip()=='Country':              
-                country=a.text.strip()
-            elif cell.text.strip()=='Language':             
-                language=a.text.strip()
-            elif cell.text.strip()=='Budget':             
-                budget=a.text.strip()
-        else:
-            continue
+        for cell in table.find_all('th'):
+        
+            if cell.find_next_sibling('td'):
+                a=cell.find_next_sibling('td')
+                if cell.text.strip()=='Directed by':
+                    director=a.text.strip()
+                elif cell.text.strip()=='Produced by':
+                
+                    producer=a.text.strip()
+                elif cell.text.strip()=='Written by':
+                
+                    writer=a.text.strip()
+                elif cell.text.strip()=='Starring':
+              
+                    starring=a.text.strip()
+                elif cell.text.strip()=='Music by':
+                
+                    music=a.text.strip()
+                elif cell.text.strip()=='Release date':
+                    release_date=a.text.strip()   
+                elif cell.text.strip()=='Running time':
+                
+                    runtime=a.text.strip()
+                elif cell.text.strip()=='Country':
+              
+                    country=a.text.strip()
+                elif cell.text.strip()=='Language':
+              
+                    language=a.text.strip()
+                elif cell.text.strip()=='Budget':
+              
+                    budget=a.text.strip()
+            else:
+                continue
             
     
     
-
+    
     #put all infos in movie list
     movie=[title,intro,plot,title_name,producer,director,writer,starring,music,release_date,runtime,country,language,budget]
     #update dataframe with this list
+    extension2=".tsv"
+    file="{}{}{}".format(name,index,extension2)
+   
+    movieTitle=["title","intro","plot","title_name","producer","director","writer","starring","music","release_date","runtime","country","language","budget"]
+    with open('tsv/'+file, 'w', newline='') as f_output:
+        tsv_output = csv.writer(f_output, delimiter='\t')
+        tsv_output.writerow(movieTitle)
+        tsv_output.writerow(movie)
     df.loc[index] = movie
     
+
+    
+  

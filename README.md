@@ -2,7 +2,7 @@
 
 # Homework 3: What movie to watch tonight? - GROUP: 11
 ## Authors
-* **Julia Nawaro **
+* **Julia Nawaro**
 * **Alessandro Taglieri**
 * **Sabriye Ela Esme**
 
@@ -14,11 +14,11 @@ Build a search engine over a list of movies that have a dedicated page on Wikipe
 
 The homework is divided into four parts: 
 
-* **Data collection **
+* **Data collection**
 Write here
-* **Search Engine **
+* **Search Engine**
 Write here
-* **Define a new score! **
+* **Define a new score!**
 Write here
 * **Algorithmic question**
 Write here

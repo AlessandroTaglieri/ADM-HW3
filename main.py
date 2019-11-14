@@ -21,10 +21,11 @@ for link in soup.select('a'):
 
 
 
+
 #define function that allows us to calculate a list that is an intersection from two list
 def intersection(lst1, lst2): 
     return list(set(lst1) & set(lst2)) 
-def getDocuments(words):
+def getDocuments(words,index):
 
 
     #we use dict3 to store term_id and its respective documents_id
@@ -35,7 +36,7 @@ def getDocuments(words):
     #in listWords we have a list that contains all words about inout query
     listWords = words.split()
     listWords=[x.lower() for x in listWords]
-
+    
     #with vocabulary.tsv we start to build a dict3 with term_id for every words in wordsList
     with open('HW3 ADM/tsv/vocobulary.tsv', 'r', newline='') as f_output:
         tsv_vocabulary = list(csv.reader(f_output, delimiter='\t'))
@@ -49,9 +50,9 @@ def getDocuments(words):
             #case where word is not in vocabulary
             if present==False:
                 dict4[word]=[]
-
-        #we continue to match dicumnets_id to every term_id in dict3
-        with open('HW3 ADM/tsv/index2.tsv', 'r', newline='') as f_output:
+        indexFile="index"+str(index)+".tsv"
+        #we continue to match documnets_id to every term_id in dict3
+        with open('HW3 ADM/tsv/'+indexFile, 'r', newline='') as f_output:
             tsv_index = list(csv.reader(f_output, delimiter='\t'))
             for k in dict3.keys():  
                 for row in tsv_index:
@@ -77,10 +78,9 @@ def getDocuments(words):
 
 
 
-
 def searchEngine1(words):
         #build the dataframe with info for every documents_id
-    document=getDocuments(words)
+    document=getDocuments(words,1)
     df=pd.DataFrame(columns=['title', 'intro', 'url'])
     for index in range(len(document)):
         #get id of documnets_is
@@ -126,7 +126,7 @@ def getTfidf_document(words,document_id):
     tfIdf=[]
     with open('HW3 ADM/tsv/vocobulary.tsv', 'r', newline='') as f_output:
         tsv_vocabulary = list(csv.reader(f_output, delimiter='\t'))
-        with open('HW3 ADM/tsv/index.tsv', 'r', newline='') as f_output:
+        with open('HW3 ADM/tsv/index2.tsv', 'r', newline='') as f_output:
             tsv_index = list(csv.reader(f_output, delimiter='\t'))
 
         for word in listWords:
@@ -168,10 +168,9 @@ def coisine(list_query,list_document):
     return res[0][1]
 
 
-
 def searchEngine2(words):
     #build the dataframe with info for every documents_id
-    document=getDocuments(words)
+    document=getDocuments(words,1)
     df_query=getTfidf_query(words)
     df=pd.DataFrame(columns=['title', 'intro', 'url','similarity'])
 
@@ -203,14 +202,77 @@ def searchEngine2(words):
             df=df.sort_values(by=['similarity'],ascending=False)
     return df
 
+
+def search3(query):
+    
+    document=getDocuments2(query,3)
+    listWords = query.split()
+    listWords=[x.lower() for x in listWords]
+    df=pd.DataFrame(columns=['title', 'intro', 'plot', 'music', 'score'])
+    df_score=pd.DataFrame(columns=['title_score', 'intro_score', 'plot_score', 'music_score'])
+    scores=[0.8,0.4,0.3,0.6]
+    df_score.loc[0]=scores
+
+    for index in range(len(document)):
+        score=0
+        #get id of documnets_is
+        numberDocument=document[index][9:]
+        #get wikipedia url
+        url=listUrl_Movies3[int(numberDocument)]
+        name="aritcle_"
+        extension2=".tsv"
+        index=int(numberDocument)
+        file="{}{}{}".format(name,index,extension2)
+        #get info about title and intro for evert film that corresponds to every documents_id
+        with open("HW3 ADM/tsv_correct/"+file,"r") as tsvfile:
+                    tsv_index = list(csv.reader(tsvfile, delimiter='\t'))
+                    title=ast.literal_eval(tsv_index[1][3])
+                    
+                    intro=ast.literal_eval(tsv_index[1][1])
+
+                    plot=ast.literal_eval(tsv_index[1][2])
+                    
+                    music=ast.literal_eval(tsv_index[1][8])
+                   
+                    
+                    if (all(elem in title  for elem in listWords)) or (all(elem in listWords  for elem in title)):
+                            score+=df_score.loc[0]['title_score']
+                            print('title')
+                    if all(elem in intro  for elem in listWords)==True:
+                            score+=df_score.loc[0]['intro_score']
+                            
+                    if all(elem in plot  for elem in listWords)==True:
+                            score+=df_score.loc[0]['plot_score']
+                            
+                    if any(elem in music  for elem in listWords)==True:
+                        
+                        score+=df_score.loc[0]['music_score']
+                    
+
+        with open('HW3 ADM/tsv/'+file, 'r', newline='') as f_output:
+            tsv_file = list(csv.reader(f_output, delimiter='\t'))
+            title2=tsv_file[1][3]
+            intro2=tsv_file[1][1]
+            plot2=tsv_file[1][2]
+            music2=tsv_file[1][8]
+            film=[title2,intro2,plot2,music2,score]
+            df.loc[index] = film
+           
+
+    ndf=df.sort_values('score', ascending=False)
+    scores
+            #print(dict4.keys())
+    return ndf
+
+
+
 def searchEngine(query, num_search):
     if num_search==1:
         searchEngine1(query)
     elif num_search==2:
         searchEngine2(query)
-    #elif num_search==3:
-        #searchEngine3(query)
-    
+    elif num_search==3:
+        searchEngine3(query)
     else:
         print("error number search engine. Insert 1,2 or 3.")
         

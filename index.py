@@ -217,3 +217,65 @@ with open('HW3 ADM/tsv/index.tsv', 'w', newline='') as f_output:
     tsv_index2 = csv.writer(f_output, delimiter='\t')           
     for key, val in dict2.items():
         tsv_index2.writerow([key, val])
+        
+        
+
+        
+        
+#CREATE INDEX3 FOR 3RD SEARCH ENGINE        
+        
+import ast
+from itertools import islice
+import csv
+
+#create index and save it on index.tsv                
+
+dict2 = {}
+count=0
+present=False
+with open('HW3 ADM/tsv/vocobulary.tsv', 'r', newline='') as f_output:
+        tsv_vocabulary = list(csv.reader(f_output, delimiter='\t'))
+        name="aritcle_"
+        extension2=".tsv"
+        h=0
+        for row in tsv_vocabulary:
+            
+            dict2[row[1]]=[]
+        for index in range(len(listUrl_Movies3)):
+            h+=1
+            print(h)
+            file="{}{}{}".format(name,index,extension2)
+            with open("HW3 ADM/tsv_correct/"+file,"r") as tsvfile:
+                data_list = list(csv.reader(tsvfile, delimiter="\t"))
+                tsvreader = csv.reader(tsvfile, delimiter="\t")
+                intro=data_list[1][1]
+                intro = ast.literal_eval(intro)
+                plot=data_list[1][2]
+                plot = ast.literal_eval(plot)
+                music=data_list[1][8]
+                music = ast.literal_eval(music)
+                text=plot+intro+music
+                text= list(set(map(str.lower, text)))
+                
+                #for evry words in plot adn intro (for every page) we get every word. From every word we get its term_id and put it whit their occurences (document_id) in dict2
+                for i in text:
+                    for row in tsv_vocabulary:
+                        if i==row[0]:
+                            doc="document_"
+                            name2="{}{}".format(doc,index)
+                            
+                            dict2[row[1]].append(name2)
+                            break
+                        else:
+                            continue
+                            
+        #put dict2 in index.tsv file. In. evry row we have a single term_id with occurences of respective word.
+        with open('HW3 ADM/tsv/index3.tsv', 'w', newline='') as f_output:
+            tsv_vocabulary = csv.writer(f_output, delimiter='\t')           
+            for key, val in dict2.items():
+                tsv_vocabulary.writerow([key, val])           
+                    
+
+
+
+

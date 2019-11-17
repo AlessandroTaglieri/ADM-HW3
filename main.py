@@ -1,5 +1,7 @@
 
 
+
+
 #import libraries
 from bs4 import BeautifulSoup
 import random
@@ -84,6 +86,7 @@ def getDocuments(words,index):
 
         document=ast.literal_eval(dict4[listWords[0]])         
         #return "no results" if any query words isn't at least in one document
+        
         for i in dict4.values():
             if not i:
                 error='No results'
@@ -94,13 +97,17 @@ def getDocuments(words,index):
         
     return document
 
+
 #SEARCH 1:
 
 def searchEngine1(words):
         #build the dataframe with info for every documents_id
     document=getDocuments(words,1)
     if document=='No results':
+        
         return document
+    elif document==[]:
+        return "No results"
     df=pd.DataFrame(columns=['title', 'intro', 'url'])
     for index in range(len(document)):
         #get id of documnets_is
@@ -195,9 +202,15 @@ def coisine(list_query,list_document):
 def searchEngine2(words):
     #build the dataframe with info for every documents_id
     document=getDocuments(words,1)
+    if document=='No results':
+        
+        return document
+    elif document==[]:
+        return "No results"
     
     if document=='No results':
         return document
+    
     df_query=getTfidf_query(words)
     df=pd.DataFrame(columns=['title', 'intro', 'url','similarity'])
 
@@ -216,7 +229,7 @@ def searchEngine2(words):
         
         numberDocument=document[index][9:]
         #get wikipedia url
-        url=listUrl_Movies3[int(numberDocument)-20000]
+        url=totalMovies[int(numberDocument)]
         name="article_"
         extension2=".tsv"
         index=int(numberDocument)
@@ -312,6 +325,8 @@ def searchEngine3(query,k):
     if document=='No results':
         
         return document
+    elif document==[]:
+        return "No results"
     listWords = query.split()
     listWords=[x.lower() for x in listWords]
     df=pd.DataFrame(columns=['title', 'intro', 'plot', 'music','starring', 'score'])
@@ -328,7 +343,7 @@ def searchEngine3(query,k):
         #get id of documnets_is
         numberDocument=document[index][9:]
         #get wikipedia url
-        url=listUrl_Movies3[int(numberDocument)-20000]
+        url=totalMovies[int(numberDocument)]
         name="article_"
         extension2=".tsv"
         index=int(numberDocument)
@@ -393,7 +408,7 @@ def searchEngine(query, num_search, *k):
         return searchEngine2(query)
     elif num_search==3:
         if k:
-            return searchEngine3(query,k)
+            return searchEngine3(query,k[0])
         else:
             print('insert third parameter K to define top-k document about search3')
     else:
@@ -401,6 +416,8 @@ def searchEngine(query, num_search, *k):
         
 #EXECUTE QUERY_: REMEMBER TO INSERT K VALUES IN 3RD ARGUMENT ONLY IF YOU CHOOSE SEARCH3
 #EXAMPLE: searchEngine(QUERY, SEARCH NUMBER, K)
+
+
 
 query='United States Mark Strong '
 df = searchEngine(query, 1)

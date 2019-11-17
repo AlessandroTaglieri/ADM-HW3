@@ -43,7 +43,9 @@ Index1: it's an index that matches every word (expressed with its term_id) to a 
 Index2: It's an index that matches every word (expressed with its term_id) to a list of document (taht contain respective word in intro/plot). For every document, there is TfIdf value for its document about specific word. <br>
 Index3: It's like index1. Here, every document can contain respective word also in title and music sections. <br>
 * **index_utils.py**
-Containing functions that we used for creating indexes. These functions allow to create different tsv files that we used to create different indexes about all search engines.
+Containing functions that we used for creating indexes. These functions allow to create different tsv files that we used to create different indexes about all search engines.<br>
+* **exercise_4.py**
+Containing the implementation of the algorithm that solves problem 4. </br>
 * **README.md**
 Containing the explaination of the content of the repository </br>
 

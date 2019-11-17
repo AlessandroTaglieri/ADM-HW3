@@ -23,22 +23,24 @@ for link in soup.select('a'):
 #call function that creates tsv files where there are texts without puntuaction and duplicate words. It is on parser_utils.py
 index_utils.createTsvFile_Search1(listUrl_Movies3)
 
+
+
 #create vocabulary and save it on vocabulary.tsv
 
 dict1 = dict()
 term_id=0
 present=False
-with open('tsv/vocobulary.tsv', 'w', newline='') as f_output:
+with open('HW3 ADM/ind/vocabulary.tsv', 'w', newline='') as f_output:
         tsv_vocabulary = csv.writer(f_output, delimiter='\t')
         tsv_vocabulary.writerow(['word','term_id'])
-        name="aritcle_"
+        name="article_"
         extension2=".tsv"
-        h=0
-        for index in range(len(listUrl_Movies3)):
-            h+=1
-            print(h)
+        
+        for index in range(totalMovies):
+           
+            print(index)
             file="{}{}{}".format(name,index,extension2)
-            with open("tsv_correct/"+file,"r") as tsvfile:
+            with open("HW3 ADM/tsv_correct/"+file,"r") as tsvfile:
                 data_list = list(csv.reader(tsvfile, delimiter="\t"))
                 tsvreader = csv.reader(tsvfile, delimiter="\t")
                 #put in intro a list of all words that we have in intro of i-th page
@@ -66,26 +68,26 @@ with open('tsv/vocobulary.tsv', 'w', newline='') as f_output:
 
 
 
-               
+              
 
- #create index and save it on index2.tsv                
+#create index and save it on index.tsv                
 
 dict2 = {}
 count=0
 present=False
-with open('tsv/vocobulary.tsv', 'r', newline='') as f_output:
+with open('HW3 ADM/ind/vocabulary.tsv', 'r', newline='') as f_output:
         tsv_vocabulary = list(csv.reader(f_output, delimiter='\t'))
-        name="aritcle_"
+        name="article_"
         extension2=".tsv"
         h=0
         for row in tsv_vocabulary:
             
             dict2[row[1]]=[]
-        for index in range(len(listUrl_Movies3)):
-            h+=1
-            print(h)
+        for index in range(totalMovies):
+            
+            print(index)
             file="{}{}{}".format(name,index,extension2)
-            with open("tsv_correct/"+file,"r") as tsvfile:
+            with open("HW3 ADM/tsv_correct/"+file,"r") as tsvfile:
                 data_list = list(csv.reader(tsvfile, delimiter="\t"))
                 tsvreader = csv.reader(tsvfile, delimiter="\t")
                 intro=data_list[1][1]
@@ -95,22 +97,25 @@ with open('tsv/vocobulary.tsv', 'r', newline='') as f_output:
                 text=plot+intro
                 text= list(set(map(str.lower, text)))
                 
-#for evry words in plot adn intro (for every page) we get every word. From every word we get its term_id and put it whit their occurences (document_id) in dict2
-
+                #for evry words in plot adn intro (for every page) we get every word. From every word we get its term_id and put it whit their occurences (document_id) in dict2
                 for i in text:
                     for row in tsv_vocabulary:
                         if i==row[0]:
-                            name="document_"+index
-                            dict2[row[1]].append(name)
+                            doc="document_"
+                            name2="{}{}".format(doc,index)
+                            
+                            dict2[row[1]].append(name2)
                             break
                         else:
                             continue
                             
-        #put dict2 in index2.tsv file. In. evry row we have a single term_id with occurences of respective word.
-        with open('tsv/index2.tsv', 'w', newline='') as f_output:
+        #put dict2 in index.tsv file. In. evry row we have a single term_id with occurences of respective word.
+        with open('HW3 ADM/ind/index1.tsv', 'w', newline='') as f_output:
             tsv_vocabulary = csv.writer(f_output, delimiter='\t')           
             for key, val in dict2.items():
                 tsv_vocabulary.writerow([key, val])           
+                    
+
 #Finally, in index2.tsv we'll have our index that we'll use for the first search engine
 
 
@@ -126,15 +131,18 @@ csv.field_size_limit(sys.maxsize)
 #call function that creates tsv files where there are preprocessed texts. It is on parser_utils.py
 index_utils.createTsvFile_Search2(listUrl_Movies3)
 
+
+#create index and save it on index.tsv                
+
 dict2 = {}
 count=0
 present=False
 documents=[]
-name='aritcle_'
+name='article_'
 extension2='.tsv'
-with open('HW3 ADM/tsv/vocobulary.tsv', 'r', newline='') as f_output:
+with open('HW3 ADM/tsv/vocabulary.tsv', 'r', newline='') as f_output:
         tsv_vocabulary = list(csv.reader(f_output, delimiter='\t'))
-        for index in range(0,10000):
+        for index in range(totalMovies):
             print(index)
             file="{}{}{}".format(name,index,extension2)
             with open("HW3 ADM/tsv_correct2/"+file,"r") as tsvfile:
@@ -152,6 +160,7 @@ with open('HW3 ADM/tsv/vocobulary.tsv', 'r', newline='') as f_output:
                 
                 
         vectorizer = TfidfVectorizer(token_pattern=r"(?u)\b\w+\b")
+      
         vectors = vectorizer.fit_transform(documents)
         #print(vectors)
         feature_names = vectorizer.get_feature_names()
@@ -160,6 +169,7 @@ with open('HW3 ADM/tsv/vocobulary.tsv', 'r', newline='') as f_output:
         df2 = pd.DataFrame(denselist, columns=feature_names)
 
 
+        
 #create index and save it on index.tsv                
 dict={}
 dict2 = {}
@@ -167,7 +177,8 @@ count=0
 present=False
 
 
-name="aritcle_"
+#print('step 2')
+name="article_"
 extension2=".tsv"
 h=0
 for row in tsv_vocabulary:
@@ -175,7 +186,8 @@ for row in tsv_vocabulary:
     dict[row[0]]=row[1]
     print(h)
     dict2[row[1]]=[]
-for index in range(0,10000):
+for index in range(totalMovies):
+    #print(index)
     print("numero documento "+ str(index))
     file="{}{}{}".format(name,index,extension2)
     with open("HW3 ADM/tsv_correct2/"+file,"r") as tsvfile:
@@ -189,17 +201,19 @@ for index in range(0,10000):
         text=list(map(str.lower, text))
     
         text2= list(set(map(str.lower, text)))
-        
+        #print(text2)
                         #for evry words in plot adn intro (for every page) we get every word. From every word we get its term_id and put it whit their occurences (document_id) in dict2
         for i in text2:
 
-           
+                            #print("word   "+str(i))
+            # print("word "+str(i))
+            # print("aaa" + str(df2.iloc[index][i]))
             res=df2.iloc[index][i]
-                          
+                            #print("res   "+str(res))
             for term in dict:
                 if i==term:
-                    print("key "+ str(term))
-                    print("value "+ str(dict[term]))
+                    #print("key "+ str(term))
+                    #print("value "+ str(dict[term]))
                     doc="document_"
                     name2="{}{}".format(doc,index)
                     result=[name2,res]
@@ -210,10 +224,9 @@ for index in range(0,10000):
 
             
 
+
 #put dict2 in index.tsv file. In. evry row we have a single term_id with occurences of respective word.
-
-
-with open('HW3 ADM/tsv/index.tsv', 'w', newline='') as f_output:
+with open('HW3 ADM/tsv_new/index2.tsv', 'w', newline='') as f_output:
     tsv_index2 = csv.writer(f_output, delimiter='\t')           
     for key, val in dict2.items():
         tsv_index2.writerow([key, val])
@@ -224,26 +237,23 @@ with open('HW3 ADM/tsv/index.tsv', 'w', newline='') as f_output:
         
 #CREATE INDEX3 FOR 3RD SEARCH ENGINE        
         
-import ast
-from itertools import islice
-import csv
 
 #create index and save it on index.tsv                
 
 dict2 = {}
 count=0
 present=False
-with open('HW3 ADM/tsv/vocobulary.tsv', 'r', newline='') as f_output:
+with open('HW3 ADM/tsv/vocabulary.tsv', 'r', newline='') as f_output:
         tsv_vocabulary = list(csv.reader(f_output, delimiter='\t'))
-        name="aritcle_"
+        name="article_"
         extension2=".tsv"
         h=0
         for row in tsv_vocabulary:
             
             dict2[row[1]]=[]
-        for index in range(len(listUrl_Movies3)):
-            h+=1
-            print(h)
+        for index in range(totalMovies):
+            
+            print(index)
             file="{}{}{}".format(name,index,extension2)
             with open("HW3 ADM/tsv_correct/"+file,"r") as tsvfile:
                 data_list = list(csv.reader(tsvfile, delimiter="\t"))
@@ -275,6 +285,11 @@ with open('HW3 ADM/tsv/vocobulary.tsv', 'r', newline='') as f_output:
             for key, val in dict2.items():
                 tsv_vocabulary.writerow([key, val])           
                     
+
+
+
+
+
 
 
 

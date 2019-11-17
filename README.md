@@ -33,10 +33,7 @@ K: it's a optional parameter. You should insert this value when you want execute
 * **collector.py**
 Allow to download all wikipedia pages in html files.
 * **parser.py**
-Allow to parse evry html page and save some infos into different tsv files. We have three different tsv file that we save in three different directory. <br>
-tsv= it contains all tsv files with no-preprocessed texts. <br>
-tsv_correct= it contains all tsv files with preprocessed texts. <br>
-tsv_correct2= it contains all tsv files with preprocessed texts. It contains also duplicate words. It's necessary about search3 to calculate TfIdf values. <br>
+Allow to parse evry html page and save some infos into different tsv files. 
 * **index.py**
 Allow to create vocabulary and index needed for the search engines. Indices are saved into three different tsv files. <br>
 Index1: it's an index that matches every word (expressed with its term_id) to a list of document (that contain respective word in intro/plot). <br>
@@ -44,6 +41,10 @@ Index2: It's an index that matches every word (expressed with its term_id) to a 
 Index3: It's like index1. Here, every document can contain respective word also in title and music sections. <br>
 * **index_utils.py**
 Containing functions that we used for creating indexes. These functions allow to create different tsv files that we used to create different indexes about all search engines.<br>
+We have three different tsv file that we save in three different directory. <br>
+tsv= it contains all tsv files with no-preprocessed texts. <br>
+tsv_correct= it contains all tsv files with preprocessed texts. <br>
+tsv_correct2= it contains all tsv files with preprocessed texts. It contains also duplicate words. It's necessary about search3 to calculate TfIdf values. <br>
 * **exercise_4.py**
 Containing the implementation of the algorithm that solves problem 4. </br>
 * **README.md**

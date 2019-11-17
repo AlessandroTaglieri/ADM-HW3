@@ -50,4 +50,4 @@ Containing the implementation of the algorithm that solves problem 4. </br>
 * **README.md**
 Containing the explaination of the content of the repository </br>
 
-
+We didn't need to create collector_utils.py and parser_utils.py because we worked only on collector.py and on parser.py.
